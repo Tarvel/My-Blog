@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+.uniform-img {
+    width: 200px; /* Set desired width */
+    height: 150px; /* Set desired height */
+    object-fit: cover; /* Ensure the image covers the entire area while maintaining aspect ratio */
+    object-position: center; /* Center the image */
+}
+
+</style>
+
+<div class="main-wrapper">
+    <section class="cta-section theme-bg-light py-5">
+        <div class="container text-center">
+            <h2 class="heading">Tai's Blog - My Personal Blog</h2>
+            <div class="intro">Welcome to my blog. Subscribe and get my latest blog post in your inbox.</div>
+            <form class="signup-form form-inline justify-content-center pt-3">
+                <div class="form-group">
+                    <label class="sr-only" for="semail">Your email</label>
+                    <input type="email" id="semail" name="semail1" class="form-control mr-md-1 semail" placeholder="Enter email">
+                </div>
+                <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+        </div><!--//container-->
+    </section>
+
+<section class="blog-list px-3 py-5 p-md-5">
+    <div class="container">
+        {% for posts in post %}
+        <div class="item mb-5">
+            <div class="media">
+                <img class="mr-3 img-fluid post-thumb d-none d-md-flex uniform-img" src="{{url_for('static', filename='post_image/' + posts.post_image)}}" alt="image">
+                <div class="media-body">
+                    <h3 class="title mb-1"><a href="{{ url_for('blog.actual_post', slug=posts.slug) }}"> {{posts.title}} </a></h3>
+                    <div class="meta mb-1"><span class="date">Published:{% if posts.updated_at %}{{posts.updated_at|format_date }} {%else%} {{ posts.created_at|format_date }} {%endif%} </span><span class="comment"><a href="#">8 comments</a></span></div>
+                    <div class="intro"> {{ posts.content|sanitize_and_truncate}}</div>	
+                    <a class="more-link" href="{{ url_for('blog.actual_post', slug=posts.slug) }}">Read more &rarr;</a>
+                </div><!--//media-body-->
+            </div><!--//media-->
+        </div><!--//item-->
+        {% endfor %}
+        
+        <nav class="blog-nav nav nav-justified my-5">
+            {% if post.has_prev %}
+            <a class="nav-link-prev nav-item nav-link d-none rounded-left" href="{{ url_for('index', page=post.prev_num) }}">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+            {% endif %}
+
+            {% if post.has_next %}
+            <a class="nav-link-next nav-item nav-link rounded" href="{{ url_for('index', page=post.next_num) }}">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+            {% endif %}				  
+        </nav>
+        
+    </div>
+</section>
+
+{% endblock %}
