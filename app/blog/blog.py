@@ -1,4 +1,3 @@
-from django import db
 from flask import Blueprint, url_for, request, redirect, render_template, flash
 from app.models import Post
 from app import db
