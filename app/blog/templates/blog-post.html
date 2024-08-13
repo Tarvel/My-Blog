@@ -12,13 +12,13 @@
 		    <div class="container">
 			    <header class="blog-post-header">
 				    <h2 class="title mb-2">{{post.title}}</h2>
-				    <div class="meta mb-3"><span class="date">{% if post.updated_at %}{{post.updated_at }} {%else%} {{ post.created_at }} {%endif%} </span><span class="comment"><a href="{{ url_for('blog.actual_post', slug=post.slug) }}#disqus_thread">4 comments</a></span></div>
+				    <div class="meta mb-3"><span class="date">{% if post.updated_at %}{{post.updated_at }} {%else%} {{ post.created_at }} {%endif%} </span><span class="comment"><a href="{{ url_for('blog.actual_post', slug=post.slug) }}#disqus_thread"> comments</a></span></div>
 			    </header>
 			    {{post.content|safe }}			
 				
 				
 		  
-				
+				<br>
 				
 				<div id="disqus_thread"></div>
 <script>
@@ -34,10 +34,6 @@
     })();
 </script>
 <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-
-	
-
-
 
 			</div>
 		</article>
