@@ -13,7 +13,8 @@
     
     <!-- FontAwesome JS-->
     <script defer src="https://use.fontawesome.com/releases/v5.7.1/js/all.js" integrity="sha384-eVEQC9zshBn0rFj4+TU78eNA19HMNigMviK/PU/FFjLXqa/GKPgX58rvt5Z8PLs7" crossorigin="anonymous"></script>
-    
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     <!-- Theme CSS -->  
     <link id="theme-style" rel="stylesheet" href="{{ url_for('static', filename='theme-6.css') }}">
 
@@ -47,7 +48,7 @@
 				
 				<ul class="navbar-nav flex-column text-left">
 					<li class="nav-item active">
-					    <a class="nav-link" href="index.html"><i class="fas fa-home fa-fw mr-2"></i>Blog Home <span class="sr-only">(current)</span></a>
+					    <a class="nav-link" href="{{ url_for('blog.posts') }}"><i class="fas fa-home fa-fw mr-2"></i>Blog Home <span class="sr-only">(current)</span></a>
 					</li>
 
 					<li class="nav-item">
@@ -62,6 +63,24 @@
 		</nav>
     </header>
     
+<style>
+    .alert-short {
+        max-width: 400px; /* Adjust as needed */
+        margin: 10px auto; /* Center the alert and add vertical spacing */
+        white-space: nowrap; /* Prevent text from wrapping to the next line */
+        overflow: hidden; /* Hide overflow text */
+        text-overflow: ellipsis; /* Display ellipsis for overflow text */
+    }    
+</style>
+
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-warning alert-dismissible fade show alert-short" role="alert">
+        {{ message }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
     
 
 		
@@ -104,6 +123,47 @@
 	<script src="{{ url_for('static', filename='style-switcher.js') }}"></script>  
     
 
+    {% if current_user.is_authenticated %}
+    <style>
+        /* Floating button style */
+        .floating-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #007bff;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            font-size: 24px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .floating-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing body content -->
+
+    <!-- Floating button -->
+    <a href="{{ url_for('admin.create_post') }}"class="floating-btn" title="Create New Post">
+        +
+    </a>
+
+    <!-- Optional: Include Bootstrap JS and other scripts -->
+    {% endif %}
+
 </body>
+
+
+<script id="dsq-count-scr" src="//tarvel.disqus.com/count.js" async></script>
+
 </html> 
 

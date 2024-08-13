@@ -1,0 +1,91 @@
+{% extends "base2.html" %}
+
+{% block content %}
+
+
+<style>
+   html, body {
+       height: 100%;
+       overflow-y: auto;
+   }
+
+   #intro {
+       background-image: url({{ url_for('static', filename='TaiBG_.jpg') }});
+       min-height: 10vh;
+       background-size: cover;
+       background-position: center;
+       background-attachment: fixed;
+   }
+
+   /* Height for devices larger than 576px */
+   @media (min-width: 900px) {
+       #intro {
+           margin-top: 10.59px;
+       }
+   }
+
+   .navbar .nav-link {
+       color: #fff !important;
+   }
+
+   .note-editor {
+       max-width: 100%;
+   }
+
+   .uniform-img {
+       width: 200px; /* Set desired width */
+       height: 150px; /* Set desired height */
+       object-fit: cover; /* Ensure the image covers the entire area while maintaining aspect ratio */
+       object-position: center; /* Center the image */
+   }
+   
+   </style>
+
+
+<div class="container text-dark">
+<div class="row">
+   <div class="col-md-8 offset-md-2">
+       <h1 class="text-white">Edit Post</h1>
+       <form action="" method="POST" enctype="multipart/form-data">
+           {{ form.hidden_tag() }}
+           <div class="form-group has-error"></div>
+
+           <div class="form-group">
+               {{ form.post_image.label (class="form-control-label text-white")}}
+               {{ form.post_image (class="form-control-label text-white") }}
+           </div>
+           
+           <div data-mdb-input-init>
+               {{ form.title.label (class='form-control-label text-white') }}
+               {{ form.title (class="form-outline form-control mb-6 text-dark") }}
+           </div>
+           
+           <div class="form-group">
+               {{ form.content.label(class="form-label text-white") }}
+               {{ form.content(class="form-control", id="summernote") }}
+           </div>   
+
+           <div data-mdb-input-init>
+               {{ form.tags.label (class='form-control-label text-white') }}
+               <span class="require text-white"><small>separate each tag with a comma ","</small></span>
+               {{ form.tags (class="form-outline form-control mb-6 text-dark") }}
+           </div>
+
+           <div class="form-group">
+               <p class="text-white"><span class="require">*</span> - required fields</p>
+           </div>
+           
+           <div class="form-group">
+
+               <input type="hidden" name="action" id="actionField" value="publish">
+               <button type="submit" class="btn btn-primary" onclick="document.getElementById('actionField').value='publish'">Save</button>
+               <button type="submit" class="btn btn-danger" onclick="document.getElementById('actionField').value='draft'">Save as Draft</button>
+               <button type="submit" class="btn btn-default" onclick="document.getElementById('actionField').value='cancel'">Cancel</button>
+
+           </div>
+       </form>
+  
+</div>
+</div>
+</div>
+{% endblock %}

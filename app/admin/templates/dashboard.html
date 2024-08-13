@@ -1,0 +1,193 @@
+{% extends "base2.html" %}
+
+{% block content %}
+
+
+<style>
+    #intro {
+        background-image: url({{ url_for('static', filename='TaiBG.jpg') }});
+        min-height: 100vh;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed; /* Fix the background */
+    }
+
+    /* Height for devices larger than 576px */
+    @media (min-width: 992px) {
+        #intro {
+            margin-top: -58.59px;
+        }
+    }
+
+    .navbar .nav-link {
+        color: #fff !important;
+    }
+
+    .note-editor {
+        max-width: 100%;
+    }
+    
+    .uniformimage {
+        width: 200px; /* Set desired width */
+        height: 150px; /* Set desired height */
+        object-fit: cover; /* Ensure the image covers the entire area while maintaining aspect ratio */
+        object-position: center; /* Center the image */
+    }
+
+
+    body {
+        padding-top: 56px; /* Offset for the fixed navbar */
+    }
+</style>
+
+    <form method="POST" action="{{ url_for('admin.dashboard') }}" id="filterForm">
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+            <a class="navbar-brand" href="{{ url_for('admin.dashboard') }}">DASHBOARD</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('blog.posts') }}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="{{ url_for('admin.dashboard') }}" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Filter
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}" onclick="selectFilter('All')">All</a>
+                            <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}" onclick="selectFilter('Draft')">Draft</a>
+                            <a class="dropdown-item" href="{{ url_for('admin.dashboard') }}
+                            " onclick="selectFilter('Published')">Published</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <input type="hidden" id="filterValue" name="filterValue" value="filterValue">
+    </form>
+    
+    
+    
+
+<section class="blog-list px-3 py-5 p-md-5">
+    <style>
+        .alert-short {
+            max-width: 400px; /* Adjust as needed */
+            margin: 10px auto; /* Center the alert and add vertical spacing */
+            white-space: nowrap; /* Prevent text from wrapping to the next line */
+            overflow: hidden; /* Hide overflow text */
+            text-overflow: ellipsis; /* Display ellipsis for overflow text */
+        }  
+        
+        /* Success alert */
+        .alert-success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        }
+
+    </style>
+
+  <script>
+    document.querySelectorAll('.alert .close').forEach(button => {
+      button.addEventListener('click', () => {
+        button.parentElement.style.display = 'none';
+      });
+    });
+  </script>
+    
+    {% for message in get_flashed_messages() %}
+    <div class="alert alert-success alert-short">
+        <button type="button" class="close" aria-label="Close">&times;</button>
+        <strong>Success! </strong>{{ message }}.
+      </div>
+        {% endfor %}
+    
+    <div class="container text-white">
+        {% for posts in post %}
+        <div class="item mb-5">
+            <div class="media">
+                <img class="mr-3 img-fluid post-thumb d-none d-md-flex uniformimage" src="{{ url_for('static', filename='post_image/' + posts.post_image) }}" alt="image">
+                <div class="media-body">
+                    <h3 class="title mb-1"><a href="{{ url_for('blog.actual_post', slug=posts.slug) }}">{{ posts.title }}</a></h3>
+                    <div class="meta mb-1"><span class="date">Published:{% if posts.updated_at %}{{posts.updated_at|format_date }} {%else%} {{ posts.created_at|format_date }} {%endif%} </span><span class="comment"><a href="#">8 comments</a></span></div>
+                    <div class="intro">{{ posts.content|sanitize_and_truncate }}</div>
+                    <a class="more-link" href="{{ url_for('blog.actual_post', slug=posts.slug) }}">Read more &rarr;</a>
+                </div><!--//media-body-->
+            </div><!--//media-->
+        </div><!--//item-->
+        {% endfor %}
+        
+        <nav class="blog-nav nav nav-justified my-5">
+
+
+            {% if post.has_prev %}
+            <a class="nav-link-prev nav-item nav-link rounded" href="{{ url_for('admin.dashboard', page=post.prev_num) }}">Previous<i class="arrow-prev fas fa-long-arrow-alt-left"></i></a>
+            {% endif %}
+
+            {% if post.has_next %}
+            <a class="nav-link-next nav-item nav-link rounded" href="{{ url_for('admin.dashboard', page=post.next_num) }}">Next<i class="arrow-next fas fa-long-arrow-alt-right"></i></a>
+            {% endif %}
+        </nav>
+
+        
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+{% if current_user.is_authenticated %}
+    <style>
+        /* Floating button style */
+        /* Floating button style */
+.floating-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1050; /* Ensure it's above other elements */
+}
+
+.floating-btn:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<body>
+    <!-- Your existing body content -->
+
+    <!-- Floating button -->
+    <a href="{{ url_for('admin.create_post') }}"class="floating-btn" title="Create New Post">
+        +
+    </a>
+
+    {% endif %}
+
+
+
+
+
+{% endblock %}

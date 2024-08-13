@@ -42,10 +42,36 @@ def login():
 
         return render_template('login.html', form=form)
 
-@admin.route('/dashboard')
+
+@admin.route('/dashboard', methods=['GET', 'POST'])
+@admin.route('/dashboard/page/<int:page>', methods=['GET', 'POST'])
 @login_required
-def dashboard():
-    return "DASHBOARD"
+def dashboard(page=1):
+    per_page = 4
+
+    post = Post.query.filter().order_by(Post.updated_at.desc().nullslast(), Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    
+    # post = all_post.order_by(Post.updated_at.desc().nullslast(), Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+    if request.method == 'POST':
+        filter_value = request.form.get('filterValue')
+        if filter_value == 'All':
+            all_post = Post.query.filter()
+            post = all_post.order_by(Post.updated_at.desc().nullslast(), Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+            return render_template('dashboard.html', post=post, title='Dashboard')
+        elif filter_value == 'Draft':
+            all_post = Post.query.filter_by(published=False)
+            post = all_post.order_by(Post.updated_at.desc().nullslast(), Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+            return render_template('dashboard.html', post=post, title='Dashboard')
+        elif filter_value == 'Published':
+            all_post = Post.query.filter_by(published=True)
+            post = all_post.order_by(Post.updated_at.desc().nullslast(), Post.created_at.desc()).paginate(page=page, per_page=per_page, error_out=False)
+            return render_template('dashboard.html', post=post, title='Dashboard')
+        else:
+            # Default logic or error handling
+            pass            
+        
+    return render_template('dashboard.html', post=post, title='Dashboard')
+    
 
 
 
@@ -60,76 +86,65 @@ def logout():
 def create_post():
     if current_user.is_authenticated:
         form = PostForm()
-        action = request.form.get('action')
 
-        
-        title = form.title.data
-        content = form.content.data
-        tags = form.tags.data
-        published = True if action != 'draft' else False
-        author_id = current_user.id
+        if request.method == 'POST':
+            action = request.form.get('action')  # Get the action value from the form
+            title = form.title.data
+            content = form.content.data
+            tags = form.tags.data
+            author_id = current_user.id
 
-        if title:
+            # Slug generation logic
             base_slug = slugify(title)
             slug = base_slug
-            count = 0
-            slug_check = Post.query.filter_by(slug=slug).first()
-            if slug_check is None:
-                pass
-            else:
-                while count <= len(slug_check):
-                    new_slug = slug + count
-                    count += 1
-                    slug = str(new_slug)
-            
-        else:
-            pass
+            count = 1
+            while Post.query.filter_by(slug=slug).first():
+                slug = f"{base_slug}-{count}"
+                count += 1
 
-        if form.validate_on_submit():  
+            # Handle the form submission based on action
+            published = (action != 'draft')  # Published if action is not 'draft'
+            
+            # Create a new post
             post = Post(
-                    title=title.title(),
-                    content=content,
-                    tags=tags,
-                    published=published,
-                    author_id=author_id,
-                    slug=slug
-                )
-                
+                title=title.title(),
+                content=content,
+                tags=tags,
+                published=published,
+                author_id=author_id,
+                slug=slug
+            )
+
+            # Handle file upload
             if form.post_image.data:
                 img_file = save_pic(form.post_image.data)
                 post.post_image = img_file
             
+            # Add and commit the post to the database
             db.session.add(post)
             db.session.commit()
-            return redirect(url_for('admin.dashboard'))
-
-
-        if action == 'draft':
-            post = Post(
-                    title=title.title(),
-                    content=content,
-                    tags=tags,
-                    author_id=author_id,
-                    slug=slug
-                )
-                
-            if form.post_image.data:
-                img_file = save_pic(form.post_image.data)
-                post.post_image = img_file
-            flash('Saved to Drafts')
-            db.session.add(post)
-            db.session.commit()
-            return redirect(url_for('admin.dashboard'))
-
             
-        elif action == 'cancel':
+            # Flash a message based on action
+            if action == 'draft':
+                flash('Saved to Drafts')
+            elif action == 'publish':
+                flash('Post Published')
+            
+            # Redirect to dashboard
             return redirect(url_for('admin.dashboard'))
+        
+        elif request.method == 'GET':
+            # If it's a GET request, just render the form
+            return render_template('create_post.html', form=form, title='Create Post')
 
-        return render_template('create_post.html', form=form)
     else:
         return redirect(url_for('blog.post'))
 
+
+
+    
 @admin.route('/upload_image', methods=['POST'])
+@login_required
 def upload_image():
     if 'file' not in request.files:
         return "No file part", 400
@@ -146,3 +161,55 @@ def upload_image():
         db.session.commit()
         
         return {'location': url_for('static', filename='post_image/' + unique_filename)}
+
+
+
+
+@admin.route('/edit_post/<string:slug>', methods=['POST', 'GET'])
+@login_required
+def edit_post(slug):
+    if current_user.is_authenticated:
+        form = PostForm()
+        post = Post.query.filter_by(slug=slug).first()
+
+        if request.method == 'GET':
+            form.title.data = post.title
+            form.content.data = post.content
+            form.tags.data = post.tags
+        
+        if request.method == 'POST':
+            action = request.form.get('action')  # Get the action value from the form
+            post.title = form.title.data
+            post.content = form.content.data
+            post.tags = form.tags.data
+            post.author_id = current_user.id
+
+            published = (action != 'draft')
+
+            # Slug generation logic
+            base_slug = slugify(form.title.data)
+            slug = base_slug
+            count = 1
+            while Post.query.filter_by(slug=slug).first():
+                slug = f"{base_slug}-{count}"
+                count += 1
+
+            if form.post_image.data:
+                img_file = save_pic(form.post_image.data)
+                post.post_image = img_file
+                
+            post.published = published
+
+            db.session.add(post)
+            db.session.commit()
+
+            if action == 'draft':
+                flash('Saved to Drafts')
+            elif action == 'publish':
+                flash('Post Edited')
+            
+            # Redirect to dashboard
+            return redirect(url_for('admin.dashboard'))
+
+            
+    return render_template('edit_post.html', form=form, title='Edit Post')

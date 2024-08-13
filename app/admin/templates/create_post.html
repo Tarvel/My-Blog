@@ -1,127 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>Create Post</title>
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='mdb.min.css') }}" crossorigin="anonymous">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
+ {% extends "base2.html" %}
 
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    
-    <!-- include summernote css/js -->
-    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-   
-    <style>
-        html, body {
-            height: 100%;
-            overflow-y: auto;
-        }
+ {% block content %}
 
+ 
+ <style>
+    html, body {
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    #intro {
+        background-image: url({{ url_for('static', filename='TaiBG_.jpg') }});
+        min-height: 10vh;
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+    }
+
+    /* Height for devices larger than 576px */
+    @media (min-width: 900px) {
         #intro {
-            background-image: url({{ url_for('static', filename='TaiBG_.jpg') }});
-            min-height: 100vh;
-            background-size: cover;
-            background-position: center;
+            margin-top: 10.59px;
         }
+    }
 
-        /* Height for devices larger than 576px */
-        @media (min-width: 992px) {
-            #intro {
-                margin-top: -58.59px;
-            }
-        }
+    .navbar .nav-link {
+        color: #fff !important;
+    }
 
-        .navbar .nav-link {
-            color: #fff !important;
-        }
+    .note-editor {
+        max-width: 100%;
+    }
 
-        .note-editor {
-            max-width: 100%;
-        }
+    .uniform-img {
+        width: 200px; /* Set desired width */
+        height: 150px; /* Set desired height */
+        object-fit: cover; /* Ensure the image covers the entire area while maintaining aspect ratio */
+        object-position: center; /* Center the image */
+    }
+    
     </style>
-</head>
 
-<body class='bg-black'>
 
-<div id="intro" class="bg-image shadow-2-strong">
-    <div class="mask d-flex align-items-center h-100" style="background-color: rgba(0, 0, 0, 0.8);">
-        <div class="container text-dark">
-            <div class="row">
-                <div class="col-md-8 offset-md-2">
-                    <h1 class="text-white">Create Post</h1>
-                    <form action="" method="POST" enctype="multipart/form-data">
-                        {{ form.hidden_tag() }}
-                        <div class="form-group has-error"></div>
+ <div class="container text-dark">
+ <div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="text-white">Create Post</h1>
+        <form action="" method="POST" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="form-group has-error"></div>
 
-                        <div class="form-group">
-                            {{ form.post_image.label (class="form-control-label text-white")}}
-                            {{ form.post_image (class="form-control-label text-white") }}
-                        </div>
-                        
-                        <div data-mdb-input-init>
-                            {{ form.title.label (class='form-control-label text-white') }}
-                            {{ form.title (class="form-outline form-control mb-6 text-dark") }}
-                        </div>
-                        
-                        <div class="form-group">
-                            {{ form.content.label(class="form-label text-white") }}
-                            {{ form.content(class="form-control", id="summernote") }}
-                        </div>   
-
-                        <div data-mdb-input-init>
-                            {{ form.tags.label (class='form-control-label text-white') }}
-                            <span class="require text-white"><small>separate each tag with a comma ","</small></span>
-                            {{ form.tags (class="form-outline form-control mb-6 text-dark") }}
-                        </div>
-
-                        <div class="form-group">
-                            <p class="text-white"><span class="require">*</span> - required fields</p>
-                        </div>
-                        
-                        <div class="form-group">
-                            {{ form.submit (class="btn btn-primary") }}
-                            <button class="btn btn-danger" value="draft">Draft</button>
-                            <button class="btn btn-default" value="cancel">Cancel</button>
-                        </div>
-                    </form>
-                </div>
+            <div class="form-group">
+                {{ form.post_image.label (class="form-control-label text-white")}}
+                {{ form.post_image (class="form-control-label text-white") }}
             </div>
-        </div>
-    </div>
+            
+            <div data-mdb-input-init>
+                {{ form.title.label (class='form-control-label text-white') }}
+                {{ form.title (class="form-outline form-control mb-6 text-dark") }}
+            </div>
+            
+            <div class="form-group">
+                {{ form.content.label(class="form-label text-white") }}
+                {{ form.content(class="form-control", id="summernote") }}
+            </div>   
+
+            <div data-mdb-input-init>
+                {{ form.tags.label (class='form-control-label text-white') }}
+                <span class="require text-white"><small>separate each tag with a comma ","</small></span>
+                {{ form.tags (class="form-outline form-control mb-6 text-dark") }}
+            </div>
+
+            <div class="form-group">
+                <p class="text-white"><span class="require">*</span> - required fields</p>
+            </div>
+            
+            <div class="form-group">
+
+                <input type="hidden" name="action" id="actionField" value="publish">
+                <button type="submit" class="btn btn-primary" onclick="document.getElementById('actionField').value='publish'">Publish</button>
+                <button type="submit" class="btn btn-danger" onclick="document.getElementById('actionField').value='draft'">Save as Draft</button>
+                <button type="submit" class="btn btn-default" onclick="document.getElementById('actionField').value='cancel'">Cancel</button>
+
+            </div>
+        </form>
+   
 </div>
-
-<script>
-    $(document).ready(function() {
-        $('#summernote').summernote({
-            height: 200,
-              });
-        }
-    );
-</script>
-
-<!-- include libraries(jQuery, bootstrap) -->
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
-<script src="{{ url_for('static', filename='jquery.js') }}"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-
-<!-- include summernote css/js -->
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-
-<script type="text/javascript" src="{{ url_for('static', filename='mdb.umd.min.js') }}"></script>
-<script type="text/javascript" src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
-
-</body>
-</html>
-
-
-
+</div>
+</div>
+{% endblock %}
