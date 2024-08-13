@@ -35,7 +35,7 @@
                 <img class="mr-3 img-fluid post-thumb d-none d-md-flex uniformimage" src="{{url_for('static', filename='post_image/' + posts.post_image)}}" alt="image">
                 <div class="media-body">
                     <h3 class="title mb-1"><a href="{{ url_for('blog.actual_post', slug=posts.slug) }}"> {{posts.title}} </a></h3>
-                    <div class="meta mb-1"><span class="date">Published:{% if posts.updated_at %}{{posts.updated_at|format_date }} {%else%} {{ posts.created_at|format_date }} {%endif%} </span><span class="comment"><a href="{{ url_for('blog.actual_post', slug=post.slug) }}#disqus_thread"> comments</a></span></div>
+                    <div class="meta mb-1"><span class="date">Published:{% if posts.updated_at %}{{posts.updated_at|format_date }} {%else%} {{ posts.created_at|format_date }} {%endif%} </span><span class="comment"><a href="{{ url_for('blog.actual_post', slug=posts.slug) }}#disqus_thread"> comments</a></span></div>
                     <div class="intro"> {{ posts.content|sanitize_and_truncate}}</div>	
                     <a class="more-link" href="{{ url_for('blog.actual_post', slug=posts.slug) }}">Read more &rarr;</a>
                 </div><!--//media-body-->
