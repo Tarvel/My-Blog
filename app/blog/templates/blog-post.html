@@ -17,25 +17,7 @@
 			    {{post.content|safe }}			
 				
 				
-
-
-
-
-				<script>
-					function setAction(action) {
-					  document.getElementById('actionField').value = action;
-					  // Submit the form if action is edit or publish
-					  if (action === 'edit' || action === 'publish') {
-						document.getElementById('myForm').submit();
-					  }
-					}
-				  
-					// Add an event listener to the delete button to submit the form
-					document.getElementById('confirmDelete').addEventListener('click', function() {
-					  document.getElementById('myForm').submit();
-					});
-				  </script>
-				  
+		  
 				
 				
 				  <div id="disqus_thread"></div>
@@ -54,9 +36,7 @@
 					  })();
 				  </script>
 				  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-				
-
-
+	
 
 
 
@@ -80,6 +60,26 @@
 		  
 			{% endif %}
 			</div>
+
+
+
+
+			<script>
+				function setAction(action) {
+				  document.getElementById('actionField').value = action;
+				  // Submit the form if action is edit or publish
+				  if (action === 'edit' || action === 'publish') {
+					document.getElementById('myForm').submit();
+				  }
+				}
+			  
+				// Add an event listener to the delete button to submit the form
+				document.getElementById('confirmDelete').addEventListener('click', function() {
+				  document.getElementById('myForm').submit();
+				});
+			  </script>
+
+
 		  </form>
 
 
@@ -105,5 +105,7 @@
 			  </div>
 			</div>
 		  </div>
+
+		  <script id="dsq-count-scr" src="//tarvel.disqus.com/count.js" async></script>
 
 	{% endblock %}
